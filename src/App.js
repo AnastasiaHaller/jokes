@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 import JokeList from "./components/JokeList";
 import "./App.css";
+import AddJoke from "./components/AddJoke";
 
 function App() {
   // const dummyJokes = [
@@ -23,7 +24,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  async function fetchJokesHandler() {
+  const fetchJokesHandler = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
@@ -39,6 +40,14 @@ function App() {
       setError(e.message);
     }
     setIsLoading(false);
+  }, []);
+
+  useEffect(() => {
+    fetchJokesHandler();
+  }, [fetchJokesHandler]);
+
+  function addJokeHandler(joke) {
+    console.log(joke);
   }
 
   let content = <p>No Jokes Yet</p>;
@@ -57,6 +66,9 @@ function App() {
 
   return (
     <React.Fragment>
+      <section>
+        <AddJoke onAddJoke={addJokeHandler}/>
+      </section>
       <section>
         <button onClick={fetchJokesHandler}>Fetch Jokes</button>
       </section>
